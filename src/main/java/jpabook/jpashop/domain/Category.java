@@ -18,6 +18,7 @@ public class Category {
 
     private String name;
 
+    //다대다는 중간 테이블을 매핑해야함
     @ManyToMany
     @JoinTable(name = "category_item",
             joinColumns = @JoinColumn(name = "category_id"),
