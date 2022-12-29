@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.aspectj.weaver.ast.Or;
 
@@ -14,6 +16,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) //생성자 메서드로 객체를 만드는 것을 방지 (create메서드를 사용하도록 강제)
 public class Order {
 
     @Id @GeneratedValue
