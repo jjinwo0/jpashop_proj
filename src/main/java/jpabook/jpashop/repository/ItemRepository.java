@@ -16,10 +16,11 @@ public class ItemRepository {
     //저장 전까지 item값이 없음 -> 새로 생성
     //else -> update의 느낌 (이미 db에 있기 때문)
     public void save(Item item){
-        if (item.getId() == null){
-            em.persist(item);
-        } else{
-            em.merge(item); //후술
+        if (item.getId() == null){ //초기 등록
+            em.persist(item); //영속 상태로 전환
+        } else{ //이미 등록된 id -> 준영속 상태
+            //merge(): 준영속 상태의 엔티티를 영속 상태로 변경
+            em.merge(item);
         }
     }
 
