@@ -23,6 +23,8 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
+    //지연 로딩: 데이터를 가져올 때, order의 값만 가져오고 member를 손대지 않음
+    //따라서, 가짜 프록시 new Member();를 생성하여 넣어둠 (ByteBuddyInterceptor())
     @ManyToOne(fetch = LAZY) //N:1에서 N쪽이 연관관계의 주인
     @JoinColumn(name = "member_id") //mapping
     private Member member;
