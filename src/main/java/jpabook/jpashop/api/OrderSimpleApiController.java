@@ -5,9 +5,10 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     //Entity반환 -> 사용하면 안됨
     @GetMapping("/api/v1/simple-orders")
@@ -50,6 +52,9 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
     }
 
+    //fetch join을 활용하여 원하는 데이터만 뽑아냄
+    //다양한 API에서 적합하게 변환하여 사용하기 쉬움: fetch join 때문 (적합한 변환 DTO)
+    //쿼리가 굉장히 복잡해지기 때문에 성능 면에서 비교적 떨어짐
     @GetMapping("/api/v3/simple-orders")
     public List<SimpleOrderDto> ordersV3(){
 
@@ -59,6 +64,18 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
 
         return result;
+    }
+
+    //원하는 데이터에 딱 맞게 조회 쿼리가 작성되었기 때문에 로직을 재활용할 수 없음.
+    //성능 면에서 V3보다 최적화됨.
+    //DTO를 조회하였기 때문에 변경할 수 없음.
+    //코드가 정돈되지 않음.
+    //API 스펙이 바뀌면 DTO 자체를 뜯어고쳐야됨.
+    //repository는 엔티티를 조회하는 데 사용되어야  -> DTO를 조회하게 되면 API스펙 자체가 들어가버림
+    //repository내부에 패키지를 새로 파서 사용하는 방식으로 문제점 해결
+    @GetMapping("/api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4(){
+        return orderSimpleQueryRepository.findOrderDtos();
     }
 
     @Data
